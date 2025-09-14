@@ -2,6 +2,9 @@ from cgitb import reset
 
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.future import select
@@ -13,6 +16,18 @@ from app.auth import verify_token, create_access_token, verify_password
 
 app = FastAPI(title="URL Shortener", version="0.1.0")
 
+# CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:8000"],  # Разрешить запросы с этих доменов (Заменить на реальный домен)
+    allow_credentials=True,  # Разрешить куки
+    allow_methods=["*"],  # Разрешить все методы
+    allow_headers=["*"],  # Разрешить все заголовки
+)
+
+# Раздача файлы из папки app/static
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
 @app.on_event("startup")
 async def startup():
     async with engine.begin() as conn:
@@ -20,9 +35,9 @@ async def startup():
         await conn.run_sync(models.Base.metadata.create_all)
 
 # Эндпоинт для проверки работы сервиса
-@app.get("/")
-async def root():
-    return {"message": "URL Shortener is running!"}
+# @app.get("/")
+# async def root():
+#     return {"message": "URL Shortener is running!"}
 
 # Запуск для разработки: uvicorn app.main:app --reload
 
@@ -134,3 +149,9 @@ async def login_for_access_token(
     access_token = create_access_token(data={"sub": str(user.id)})
 
     return {"access_token": access_token, "token_type": "bearer"}
+
+# Главная страница
+@app.get("/", response_class=HTMLResponse)
+async def read_root():
+    with open("app/static/index.html", "r") as f:
+        return f.read()

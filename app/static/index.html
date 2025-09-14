@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <script src="https://unpkg.com/htmx.org@1.9.6" defer></script>
+    <script src="https://unpkg.com/htmx.org@1.9.6/dist/ext/ws.js" defer></script>
+    <script src="/static/script.js" defer></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>🔗 Сокращатель ссылок</h1>
+
+        <!-- Форма входа -->
+        <div id="login-section" style="display: none;">
+            <h3>Вход</h3>
+            <form id="login-form">
+                <input type="text" name="username" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Пароль" required>
+                <button type="submit">Войти</button>
+            </form>
+            <div id="auth-result"></div>
+        </div>
+
+        <!-- Основной функционал (покажем после авторизации) -->
+        <div id="app-section" style="display: none;">
+            <h3>Создать короткую ссылку</h3>
+            <form id="create-link-form">
+                <input type="url" name="original_url" placeholder="Введите длинную ссылку" required>
+                <button type="submit">Сократить</button>
+            </form>
+            <div id="link-result"></div>
+
+            <h3>Мои ссылки</h3>
+            <button onclick="loadUserLinks()">Обновить список</button>
+            <div id="links-list"></div>
+
+            <button onclick="logout()" style="margin-top: 20px;">Выйти</button>
+        </div>
+    </div>
+
+</body>
+</html>
