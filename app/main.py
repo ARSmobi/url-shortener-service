@@ -1,13 +1,14 @@
 from cgitb import reset
 
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.future import select
+from starlette.requests import Request
 
 from app import models, schemas, crud
 from app.database import engine, get_db
@@ -98,7 +99,11 @@ async def create_short_url(
         current_user: models.User = Depends(get_current_user),
         db: AsyncSession = Depends(get_db)):
     """Создание короткого URL для авторизованного пользователя"""
-    # Заменить на настоящую проверку токена
+    if await crud.get_link_by_original_url(db=db, original_url=link.original_url):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Ссылка с таким URL уже существует"
+        )
     new_link = await crud.create_short_url(db=db, link=link, user_id=current_user.id)
     return new_link
 
@@ -109,6 +114,24 @@ async def get_user_links(
         db: AsyncSession = Depends(get_db)):
     """Получение списка ссылок пользователя"""
     return await crud.get_user_links(db=db, user_id=current_user.id)
+
+# Эндпоинт для удаления ссылки
+@app.delete("/links/{link_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_link(
+        link_id: int,
+        current_user: models.User = Depends(get_current_user),
+        db: AsyncSession = Depends(get_db)):
+    """Удаление ссылки пользователя"""
+    if await crud.delete_link(db=db, link_id=link_id, user_id=current_user.id):
+        return {
+            "message": "Ссылка удалена",
+            "link_id": link_id
+        }
+    if not await crud.get_link_by_id(db=db, link_id=link_id):
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Ссылка не найдена"
+        )
 
 # Эндпоинт для редиректа по короткому URL
 @app.get("/r/{short_url}")
@@ -155,3 +178,17 @@ async def login_for_access_token(
 async def read_root():
     with open("app/static/index.html", "r") as f:
         return f.read()
+
+@app.exception_handler(500)
+async def internal_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Внутренняя ошибка сервера"},
+    )
+
+@app.exception_handler(404)
+async def not_found_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=404,
+        content={"detail": "Не найдено"},
+    )

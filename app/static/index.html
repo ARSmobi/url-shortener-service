@@ -10,8 +10,11 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    <header>
+        <div><h1>🔗 Сокращатель ссылок</h1></div>
+        <div id="auth-status"></div>
+    </header>
     <div class="container">
-        <h1>🔗 Сокращатель ссылок</h1>
 
         <!-- Форма входа -->
         <div id="login-section" style="display: none;">
@@ -22,6 +25,19 @@
                 <button type="submit">Войти</button>
             </form>
             <div id="auth-result"></div>
+            <p>Нет аккаунта? <a href="#" onclick="showRegisterForm()">Зарегистрироваться</a></p>
+        </div>
+
+        <!-- Форма регистрации -->
+        <div id="register-section" style="display: none;">
+            <h3>Регистрация</h3>
+            <form id="register-form">
+                <input type="text" name="username" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Пароль" required>
+                <button type="submit">Зарегистрироваться</button>
+            </form>
+            <div id="register-result"></div>
+            <p>Уже есть аккаунт? <a href="#" onclick="showRegisterForm()">Войти</a></p>
         </div>
 
         <!-- Основной функционал (покажем после авторизации) -->
@@ -41,5 +57,8 @@
         </div>
     </div>
 
+    <footer>
+
+    </footer>
 </body>
 </html>
