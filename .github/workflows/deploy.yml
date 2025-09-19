@@ -42,7 +42,7 @@ jobs:
           rm -rf app production.py requirements.txt .env
 
           # Копирование новых файлов из репозитория
-          scp -r cd64186@cd64186.tw1.ru:/home/c/public_html/url-shortener-service/* .
+          scp -r cd64186@cd64186.tw1.ru:/public_html/url-shortener-service/* .
 
           # Проверка наличия requirements.txt
           if [ ! -f "requirements.txt" ]; then
