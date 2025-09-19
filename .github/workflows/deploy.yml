@@ -35,8 +35,8 @@ jobs:
           cd $DEPLOY_PATH
 
           # Установка зависимостей системы (если нужно)
-          sudo apt update
-          sudo apt install -y python3-venv
+          # sudo apt update
+          # sudo apt install -y python3-venv
 
           # Удаление старых файлов (по желанию)
           rm -rf app production.py requirements.txt .env
