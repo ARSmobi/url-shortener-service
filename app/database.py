@@ -1,13 +1,12 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
+from app.config import settings
 
-# Формат ссылки для SQLite (для разработки)
-SQLALCHEMY_DATABASE_URL = "sqlite+aiosqlite:///./sql_app.db"
 
 engine = create_async_engine(
-    SQLALCHEMY_DATABASE_URL,
+    settings.database_url,
     echo=True,
-    future=True
+    future=True,
 )
 
 AsyncSessionLocal = sessionmaker(

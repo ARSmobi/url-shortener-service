@@ -69,6 +69,18 @@ button:hover {
 }
 
 .link-item {
+    background-color: #f1cb95;
+    border-radius: 15px;
     padding: 10px;
-    border-bottom: 1px solid #eee;
+}
+
+.copy {
+    color: #887f15;
+    font-weight: bold;
+    transition: 0.5s;
+}
+
+.copy:hover {
+    color: #dd4c89;
+    transition: 0.5s;
 }

@@ -81,7 +81,7 @@ function displayLinks(links) {
     linksContainer.innerHTML = links.map(link => `
         <div class="link-item">
             <p><strong>Оригинальная:</strong> ${link.original_url}</p>
-            <p><strong>Короткая:</strong> <a href="/r/${link.short_url}" target="_blank">${window.location.origin}/r/${link.short_url}</a></p>
+            <p><strong>Короткая:</strong> <a href="/r/${link.short_url}" target="_blank">${window.location.origin}/r/${link.short_url}</a><span class="copy"> ⧉</span></p>
             <p><strong>Переходы:</strong> ${link.clicks}</p>
             <p><strong>Создана:</strong> ${new Date(link.created_at).toLocaleDateString()}</p>
             <button onclick="deleteLink(${link.id})" style="color: red;">Удалить</button>
@@ -121,7 +121,8 @@ document.getElementById('login-form').addEventListener('submit', async function(
             document.getElementById('auth-result').innerHTML = '<p style="color: green;">Успешный вход!</p>';
             checkAuthStatus();
         } else {
-            document.getElementById('auth-result').innerHTML = '<p style="color: red;">Ошибка входа</p>';
+            const errorText = await response.json();
+            document.getElementById('auth-result').innerHTML = `<p style="color: red;">${errorText.detail}</p>`;
         }
     } catch (error) {
         document.getElementById('auth-result').innerHTML = '<p style="color: red;">Ошибка сети</p>';
@@ -214,11 +215,11 @@ document.querySelector('#create-link-form').addEventListener('submit', async fun
         } else if (response.status === 401) {
             logout();
         } else {
-            const errorText = await response.text();
-            document.getElementById('link-result').innerHTML = `<p style="color: red;">Ошибка создания ссылки ${errorText}</p>`;
+            const errorText = await response.json();
+            document.getElementById('link-result').innerHTML = `<p style="color: red;">${errorText.detail}</p>`;
         }
     } catch (error) {
-        document.getElementById('link-result').innerHTML = '<p style="color: red;">Ошибка сети</p>';
+        document.getElementById('link-result').innerHTML = '<p style="color: red;">Ошибка сети </p>';
     }
 });
 

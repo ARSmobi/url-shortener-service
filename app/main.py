@@ -29,11 +29,11 @@ app.add_middleware(
 # Раздача файлы из папки app/static
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-@app.on_event("startup")
-async def startup():
-    async with engine.begin() as conn:
-        await conn.run_sync(models.Base.metadata.drop_all)
-        await conn.run_sync(models.Base.metadata.create_all)
+# @app.on_event("startup")
+# async def startup():
+#     async with engine.begin() as conn:
+#         # await conn.run_sync(models.Base.metadata.drop_all)
+#         await conn.run_sync(models.Base.metadata.create_all)
 
 # Эндпоинт для проверки работы сервиса
 # @app.get("/")
