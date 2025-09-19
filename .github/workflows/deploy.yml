@@ -45,17 +45,17 @@ jobs:
           scp -r cd64186@cd64186.tw1.ru:/public_html/url-shortener-service/* .
 
           # Проверка наличия requirements.txt
-          if [ ! -f "requirements.txt" ]; then
-            echo "Файл requirements.txt отсутствует!"
-            exit 1
-          fi
+          # if [ ! -f "requirements.txt" ]; then
+          #   echo "Файл requirements.txt отсутствует!"
+          #   exit 1
+          # fi
 
           # Создание виртуального окружения
           python3 -m venv venv
           source venv/bin/activate
 
           # Установка зависимостей
-          pip install -r requirements.txt --ignore-installed
+          pip install -r requirements.txt
 
           # Перезапуск Uvicorn
           pkill -f uvicorn || true
