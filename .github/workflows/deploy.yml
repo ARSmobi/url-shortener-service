@@ -34,15 +34,29 @@ jobs:
           # Переход в директорию проекта
           cd $DEPLOY_PATH
 
-          # Обновление репозитория
-          git fetch --all
-          git reset --hard origin/main
+          # Установка зависимостей системы (если нужно)
+          sudo apt update
+          sudo apt install -y python3-venv
 
-          # Активация виртуального окружения (если есть)
-          source venv/bin/activate || python3 -m venv venv && source venv/bin/activate
+          # Удаление старых файлов (по желанию)
+          rm -rf app production.py requirements.txt .env
+
+          # Копирование новых файлов из репозитория
+          scp -r user@yourdomain.com:/path/to/local/project/* .
+
+          # Проверка наличия requirements.txt
+          if [ ! -f "requirements.txt" ]; then
+            echo "Файл requirements.txt отсутствует!"
+            exit 1
+          fi
+
+          # Создание виртуального окружения
+          python3 -m venv venv
+          source venv/bin/activate
 
           # Установка зависимостей
-          pip install -r requirements.txt
-          # Перезапуск Uvicorn (если запущен через systemd или screen)
+          pip install -r requirements.txt --ignore-installed
+
+          # Перезапуск Uvicorn
           pkill -f uvicorn || true
           nohup uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload &

@@ -1,0 +1,110 @@
+Run appleboy/ssh-action@master
+  with:
+    host: ***
+    username: ***
+    key: ***
+    script: # Переход в директорию проекта
+  cd $DEPLOY_PATH
+
+  # Обновление репозитория
+  git fetch --all
+  git reset --hard origin/main
+
+  # Активация виртуального окружения (если есть)
+  source venv/bin/activate || python3 -m venv venv && source venv/bin/activate
+
+  # Установка зависимостей
+  pip install -r requirements.txt
+  # Перезапуск Uvicorn (если запущен через systemd или screen)
+  pkill -f uvicorn || true
+  nohup uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload &
+
+    port: 22
+    protocol: tcp
+    timeout: 30s
+    command_timeout: 10m
+    proxy_port: 22
+    proxy_protocol: tcp
+    proxy_timeout: 30s
+    curl_insecure: false
+    capture_stdout: false
+Run echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
+  echo "$GITHUB_ACTION_PATH" >> $GITHUB_PATH
+  shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+  env:
+    GITHUB_ACTION_PATH: /home/runner/work/_actions/appleboy/ssh-action/master
+Run entrypoint.sh
+  entrypoint.sh
+  shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+  env:
+    GITHUB_ACTION_PATH: /home/runner/work/_actions/appleboy/ssh-action/master
+    INPUT_HOST: ***
+    INPUT_PORT: 22
+    INPUT_PROTOCOL: tcp
+    INPUT_USERNAME: ***
+    INPUT_PASSWORD:
+    INPUT_PASSPHRASE:
+    INPUT_KEY: ***
+    INPUT_KEY_PATH:
+    INPUT_FINGERPRINT:
+    INPUT_PROXY_HOST:
+    INPUT_PROXY_PORT: 22
+    INPUT_PROXY_USERNAME:
+    INPUT_PROXY_PASSWORD:
+    INPUT_PROXY_PASSPHRASE:
+    INPUT_PROXY_KEY:
+    INPUT_PROXY_KEY_PATH:
+    INPUT_PROXY_FINGERPRINT:
+    INPUT_TIMEOUT: 30s
+    INPUT_PROXY_TIMEOUT: 30s
+    INPUT_COMMAND_TIMEOUT: 10m
+    INPUT_SCRIPT: # Переход в директорию проекта
+  cd $DEPLOY_PATH
+
+  # Обновление репозитория
+  git fetch --all
+  git reset --hard origin/main
+
+  # Активация виртуального окружения (если есть)
+  source venv/bin/activate || python3 -m venv venv && source venv/bin/activate
+
+  # Установка зависимостей
+  pip install -r requirements.txt
+  # Перезапуск Uvicorn (если запущен через systemd или screen)
+  pkill -f uvicorn || true
+  nohup uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload &
+
+    INPUT_SCRIPT_FILE:
+    INPUT_ENVS:
+    INPUT_ENVS_FORMAT:
+    INPUT_DEBUG:
+    INPUT_ALL_ENVS:
+    INPUT_REQUEST_PTY:
+    INPUT_USE_INSECURE_CIPHER:
+    INPUT_CIPHER:
+    INPUT_PROXY_USE_INSECURE_CIPHER:
+    INPUT_PROXY_CIPHER:
+    INPUT_SYNC:
+    INPUT_CAPTURE_STDOUT: false
+    INPUT_CURL_INSECURE: false
+    DRONE_SSH_VERSION:
+Downloading drone-ssh-1.8.1-linux-amd64 from https://github.com/appleboy/drone-ssh/releases/download/v1.8.1
+======= CLI Version Information =======
+Drone SSH version 1.8.1
+=======================================
+fatal: not a git repository (or any parent up to mount point /)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+fatal: not a git repository (or any parent up to mount point /)
+Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
+bash: line 9: venv/bin/activate: No such file or directory
+The virtual environment was not created successfully because ensurepip is not
+available.  On Debian/Ubuntu systems, you need to install the python3-venv
+package using the following command.
+    apt install python3.10-venv
+You may need to use sudo with that command.  After installing the python3-venv
+package, recreate your virtual environment.
+Failing command: /home/c/***/venv/bin/python3
+Defaulting to user installation because normal site-packages is not writeable
+ERROR: Could not open requirements file: [Errno 2] No such file or directory: 'requirements.txt'
+2025/09/19 22:24:02 Process exited with status 143 from signal TERM
+Error: Process completed with exit code 1.
