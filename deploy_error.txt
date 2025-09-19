@@ -6,19 +6,32 @@ Run appleboy/ssh-action@master
     script: # Переход в директорию проекта
   cd $DEPLOY_PATH
 
-  # Обновление репозитория
-  git fetch --all
-  git reset --hard origin/main
+  # Установка зависимостей системы (если нужно)
+  sudo apt update
+  sudo apt install -y python3-venv
 
-  # Активация виртуального окружения (если есть)
-  source venv/bin/activate || python3 -m venv venv && source venv/bin/activate
+  # Удаление старых файлов (по желанию)
+  rm -rf app production.py requirements.txt .env
+
+  # Копирование новых файлов из репозитория
+  scp -r user@yourdomain.com:/path/to/local/project/* .
+
+  # Проверка наличия requirements.txt
+  if [ ! -f "requirements.txt" ]; then
+    echo "Файл requirements.txt отсутствует!"
+    exit 1
+  fi
+
+  # Создание виртуального окружения
+  python3 -m venv venv
+  source venv/bin/activate
 
   # Установка зависимостей
-  pip install -r requirements.txt
-  # Перезапуск Uvicorn (если запущен через systemd или screen)
+  pip install -r requirements.txt --ignore-installed
+
+  # Перезапуск Uvicorn
   pkill -f uvicorn || true
   nohup uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload &
-
     port: 22
     protocol: tcp
     timeout: 30s
@@ -61,19 +74,32 @@ Run entrypoint.sh
     INPUT_SCRIPT: # Переход в директорию проекта
   cd $DEPLOY_PATH
 
-  # Обновление репозитория
-  git fetch --all
-  git reset --hard origin/main
+  # Установка зависимостей системы (если нужно)
+  sudo apt update
+  sudo apt install -y python3-venv
 
-  # Активация виртуального окружения (если есть)
-  source venv/bin/activate || python3 -m venv venv && source venv/bin/activate
+  # Удаление старых файлов (по желанию)
+  rm -rf app production.py requirements.txt .env
+
+  # Копирование новых файлов из репозитория
+  scp -r user@yourdomain.com:/path/to/local/project/* .
+
+  # Проверка наличия requirements.txt
+  if [ ! -f "requirements.txt" ]; then
+    echo "Файл requirements.txt отсутствует!"
+    exit 1
+  fi
+
+  # Создание виртуального окружения
+  python3 -m venv venv
+  source venv/bin/activate
 
   # Установка зависимостей
-  pip install -r requirements.txt
-  # Перезапуск Uvicorn (если запущен через systemd или screen)
+  pip install -r requirements.txt --ignore-installed
+
+  # Перезапуск Uvicorn
   pkill -f uvicorn || true
   nohup uvicorn app.main:app --host 0.0.0.0 --port 8080 --reload &
-
     INPUT_SCRIPT_FILE:
     INPUT_ENVS:
     INPUT_ENVS_FORMAT:
@@ -92,19 +118,11 @@ Downloading drone-ssh-1.8.1-linux-amd64 from https://github.com/appleboy/drone-s
 ======= CLI Version Information =======
 Drone SSH version 1.8.1
 =======================================
-fatal: not a git repository (or any parent up to mount point /)
-Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
-fatal: not a git repository (or any parent up to mount point /)
-Stopping at filesystem boundary (GIT_DISCOVERY_ACROSS_FILESYSTEM not set).
-bash: line 9: venv/bin/activate: No such file or directory
-The virtual environment was not created successfully because ensurepip is not
-available.  On Debian/Ubuntu systems, you need to install the python3-venv
-package using the following command.
-    apt install python3.10-venv
-You may need to use sudo with that command.  After installing the python3-venv
-package, recreate your virtual environment.
-Failing command: /home/c/***/venv/bin/python3
-Defaulting to user installation because normal site-packages is not writeable
-ERROR: Could not open requirements file: [Errno 2] No such file or directory: 'requirements.txt'
-2025/09/19 22:24:02 Process exited with status 143 from signal TERM
+sudo: a terminal is required to read the password; either use the -S option to read from standard input or configure an askpass helper
+sudo: a password is required
+sudo: a terminal is required to read the password; either use the -S option to read from standard input or configure an askpass helper
+sudo: a password is required
+ssh: connect to host yourdomain.com port 22: Connection refused
+Файл requirements.txt отсутствует!
+2025/09/19 22:43:27 Process exited with status 1
 Error: Process completed with exit code 1.
