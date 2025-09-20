@@ -31,7 +31,7 @@ jobs:
         username: ${{ secrets.DEPLOY_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          # Переход в директорию проекта
+          # Переход в директорию проекта на сервере
           cd $DEPLOY_PATH
 
           # Установка зависимостей системы (если нужно)
