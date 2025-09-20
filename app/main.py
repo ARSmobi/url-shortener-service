@@ -11,16 +11,21 @@ from sqlalchemy.future import select
 from starlette.requests import Request
 
 from app import models, schemas, crud
+from app.config import settings
 from app.database import engine, get_db
 from app.utils import generate_short_url
 from app.auth import verify_token, create_access_token, verify_password
 
-app = FastAPI(title="URL Shortener", version="0.1.0")
+app = FastAPI(
+    title="URL Shortener",
+    version="0.1.0",
+    root_path="" if settings.environment == "development" else "/"
+)
 
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8000"],  # Разрешить запросы с этих доменов (Заменить на реальный домен)
+    allow_origins=settings.cors_origins,  # Разрешить запросы с этих доменов
     allow_credentials=True,  # Разрешить куки
     allow_methods=["*"],  # Разрешить все методы
     allow_headers=["*"],  # Разрешить все заголовки
@@ -192,3 +197,10 @@ async def not_found_handler(request: Request, exc: Exception):
         status_code=404,
         content={"detail": "Не найдено"},
     )
+
+@app.get("/api/config")
+async def get_config():
+    return {
+        "domain": settings.domain,
+        "enviroment": settings.environment
+    }

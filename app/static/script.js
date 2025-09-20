@@ -1,4 +1,16 @@
 let authToken = localStorage.getItem('authToken');
+let DOMAIN = window.location.origin;  // Автоматически определяем домен
+
+// Или получаем домен из конфига
+async function loadConfig() {
+    try {
+        const response = await fetch('/api/config');
+        const config = await response.json();
+        DOMAIN = config.domain;
+    } catch (error) {
+        console.log('Using default domain:', DOMAIN);
+    }
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     if (typeof htmx !== 'undefined') {
@@ -81,7 +93,7 @@ function displayLinks(links) {
     linksContainer.innerHTML = links.map(link => `
         <div class="link-item">
             <p><strong>Оригинальная:</strong> ${link.original_url}</p>
-            <p><strong>Короткая:</strong> <a href="/r/${link.short_url}" target="_blank">${window.location.origin}/r/${link.short_url}</a><span class="copy"> ⧉</span></p>
+            <p><strong>Короткая:</strong> <a href="${DOMAIN}/r/${link.short_url}" target="_blank">${DOMAIN}/r/${link.short_url}</a><span class="copy"> ⧉</span></p>
             <p><strong>Переходы:</strong> ${link.clicks}</p>
             <p><strong>Создана:</strong> ${new Date(link.created_at).toLocaleDateString()}</p>
             <button onclick="deleteLink(${link.id})" style="color: red;">Удалить</button>

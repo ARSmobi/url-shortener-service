@@ -25,37 +25,16 @@ jobs:
         DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
 
     - name: Deploy via SSH
-      uses: appleboy/ssh-action@master
+      uses: appleboy/ssh-action@main
       with:
         host: ${{ secrets.DEPLOY_HOST }}
         username: ${{ secrets.DEPLOY_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
-          # Переход в директорию проекта на сервере
-          cd $DEPLOY_PATH
-
-          # Установка зависимостей системы (если нужно)
-          # sudo apt update
-          # sudo apt install -y python3-venv
-
-          # Удаление старых файлов (по желанию)
-          # rm -rf app production.py requirements.txt .env
-
-          # Копирование новых файлов из репозитория
-          # scp -r cd64186@cd64186.tw1.ru:/public_html/* .
-
-          # Проверка наличия requirements.txt
-          # if [ ! -f "requirements.txt" ]; then
-          #   echo "Файл requirements.txt отсутствует!"
-          #   exit 1
-          # fi
-
-          # Создание виртуального окружения
-          # python3 -m venv venv
-          source venv/bin/activate
           git pull
-
-          # Установка зависимостей
+          cd ../public_html
+          git pull
+          source venv/bin/activate
           pip install -r requirements.txt
 
           # Перезапуск Uvicorn
