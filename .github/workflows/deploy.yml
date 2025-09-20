@@ -39,10 +39,10 @@ jobs:
           # sudo apt install -y python3-venv
 
           # Удаление старых файлов (по желанию)
-          rm -rf app production.py requirements.txt .env
+          # rm -rf app production.py requirements.txt .env
 
           # Копирование новых файлов из репозитория
-          scp -r cd64186@cd64186.tw1.ru:/public_html/url-shortener-service/* .
+          # scp -r cd64186@cd64186.tw1.ru:/public_html/url-shortener-service/* .
 
           # Проверка наличия requirements.txt
           # if [ ! -f "requirements.txt" ]; then
@@ -51,7 +51,7 @@ jobs:
           # fi
 
           # Создание виртуального окружения
-          python3 -m venv venv
+          # python3 -m venv venv
           source venv/bin/activate
 
           # Установка зависимостей
