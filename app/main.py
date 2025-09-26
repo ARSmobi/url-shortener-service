@@ -19,13 +19,13 @@ from app.auth import verify_token, create_access_token, verify_password
 app = FastAPI(
     title="URL Shortener",
     version="0.1.0",
-    root_path="" if settings.environment == "development" else "/"
+    root_path="" if settings.ENVIRONMENT == "development" else "/"
 )
 
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,  # Разрешить запросы с этих доменов
+    allow_origins=settings.CORS_ORIGINS,  # Разрешить запросы с этих доменов
     allow_credentials=True,  # Разрешить куки
     allow_methods=["*"],  # Разрешить все методы
     allow_headers=["*"],  # Разрешить все заголовки
@@ -33,19 +33,6 @@ app.add_middleware(
 
 # Раздача файлы из папки app/static
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
-
-# @app.on_event("startup")
-# async def startup():
-#     async with engine.begin() as conn:
-#         # await conn.run_sync(models.Base.metadata.drop_all)
-#         await conn.run_sync(models.Base.metadata.create_all)
-
-# Эндпоинт для проверки работы сервиса
-# @app.get("/")
-# async def root():
-#     return {"message": "URL Shortener is running!"}
-
-# Запуск для разработки: uvicorn app.main:app --reload
 
 # Эндпоинт для регистрации нового пользователя
 @app.post("/register", response_model=schemas.UserOut, status_code=status.HTTP_201_CREATED)
@@ -201,6 +188,6 @@ async def not_found_handler(request: Request, exc: Exception):
 @app.get("/api/config")
 async def get_config():
     return {
-        "domain": settings.domain,
-        "enviroment": settings.environment
+        "domain": settings.DOMAIN,
+        "enviroment": settings.ENVIRONMENT
     }
